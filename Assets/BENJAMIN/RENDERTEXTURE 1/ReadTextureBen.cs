@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class ReadTexture : MonoBehaviour 
+public class ReadTextureBen : MonoBehaviour 
 {
     public RenderTexture renderTex;
     public Texture2D tex;
