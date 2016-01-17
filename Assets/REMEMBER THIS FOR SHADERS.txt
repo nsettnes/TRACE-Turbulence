@@ -1,0 +1,25 @@
+SubShader 
+	{
+		Tags{ "Queue" = "Transparent" }
+
+		Blend SrcAlpha OneMinusSrcAlpha
+		
+		CGPROGRAM
+		#pragma surface surf Lambert vertex:vert keepalpha
+
+
+
+
+
+
+
+void surf (Input IN, inout SurfaceOutput o) 
+		{
+			float h = PerlinNormal(IN.pos.xy, _Octaves, _Offset, _Frequency, _Amplitude, _Lacunarity, _Persistence);
+			
+			float4 color = EncodeFloatRGBA(h);
+			o.Albedo.r = color.r;
+			o.Albedo.g = color.g;
+			o.Albedo.b = color.b;
+			o.Alpha = color.a;
+		}
