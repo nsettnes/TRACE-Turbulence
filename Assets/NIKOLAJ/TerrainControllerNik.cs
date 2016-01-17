@@ -32,8 +32,8 @@ public class TerrainControllerNik : MonoBehaviour
 			}
 		}
 		TerrainData tData = GetComponent<Terrain>().terrainData;
-
-		Debug.Log("Setting heightmap...");
+        GetComponent<TerrainCollider>().terrainData = tData;
+        Debug.Log("Setting heightmap...");
 		tData.SetHeights(0, 0, heightmap);
 		Debug.Log("... heightmap set.");
 	}

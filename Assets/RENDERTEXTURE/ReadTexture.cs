@@ -16,11 +16,13 @@ public class ReadTexture : MonoBehaviour
 
     void Update()
     {
+
+        //TODO: Create new rendertexture here
         if (Input.GetKeyDown(KeyCode.Space))
         {
             RenderTexture.active = renderTex;
             DestroyImmediate(tex);
-            tex = new Texture2D(size, size);
+            tex = new Texture2D(size, size, TextureFormat.RGBAHalf, true);
             tex.wrapMode = TextureWrapMode.Clamp;
             tex.ReadPixels(new Rect(0, 0, size, size), 0, 0);
             tex.Apply();
