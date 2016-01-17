@@ -7,7 +7,7 @@ public class ReadTextureBen : MonoBehaviour
     public Texture2D tex;
     int size = 1025;
 
-	public TerrainController tController;
+	public TerrainControllerBen tController;
 
     void Start()
     {
