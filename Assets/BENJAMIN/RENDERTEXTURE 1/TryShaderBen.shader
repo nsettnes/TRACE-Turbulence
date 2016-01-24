@@ -200,12 +200,10 @@ Shader "Noise/TryShaderBen"
 		void surf (Input IN, inout SurfaceOutput o) 
 		{
 			float h = CellFast(IN.pos, _Octaves, _Offset, _Frequency, _Amplitude, _Lacunarity, _Persistence);
-			
-			h = h * 0.5 + 0.5;
-			
+			h = clamp(h, 0.0, 1.0);
 			#include "UnityCG.cginc"
 			float4 color = EncodeFloatRGBA(h);
-			
+			//float4 color = float4(h, h, h, 1);
 			o.Albedo = color.rgb;
 			o.Alpha = color.a;
 		}

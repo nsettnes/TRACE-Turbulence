@@ -28,11 +28,11 @@ public class TerrainControllerBen : MonoBehaviour
 		{
 			for(int y = 0; y < tex.height; y++)
 			{
-                heightmap[x, y] = DecodeFloatRGBA( tex.GetPixel(x,y) * 0.5f);
+                heightmap[x, y] = DecodeFloatRGBA( tex.GetPixel(x,y));
 			}
 		}
 		TerrainData tData = GetComponent<Terrain>().terrainData;
-
+        GetComponent<TerrainCollider>().terrainData = tData;
 		Debug.Log("Setting heightmap...");
 		tData.SetHeights(0, 0, heightmap);
 		Debug.Log("... heightmap set.");
