@@ -3,40 +3,40 @@ using System.Collections;
 
 public class TerrainControllerNik : MonoBehaviour 
 {
-	void Start () 
-	{
-//		TerrainData tData = GetComponent<Terrain>().terrainData;
-//		int hmWidth = tData.heightmapWidth;
-//		float[,] heights = tData.GetHeights(0,0, hmWidth, hmWidth);
-//
-//		for (int y = 0; y < hmWidth; y++) 
-//		{
-//			for (int x = 0; x < hmWidth; x++) 
-//			{
-//				heights[x,y] = Random.value;
-//			}
-//		}
-//		
-//		SetHeights(heights);
-	}
+	//void Start () 
+	//{
+ //       TerrainData tData = GetComponent<Terrain>().terrainData;
+ //       int hmWidth = tData.heightmapWidth;
+ //       float[,] heights = tData.GetHeights(0, 0, hmWidth, hmWidth);
 
-    public void SetHeights(Texture2D tex)
-	{
-        //Color[] colormap = tex.GetPixels(0,0,tex.width, tex.width);
-        float[,] heightmap = new float[tex.width,tex.height];
-		for(int x = 0; x < tex.width; x++)
-		{
-			for(int y = 0; y < tex.height; y++)
-			{
-                heightmap[x, y] = DecodeFloatRGBA( tex.GetPixel(x,y) );
-			}
-		}
-		TerrainData tData = GetComponent<Terrain>().terrainData;
-        GetComponent<TerrainCollider>().terrainData = tData;
-        Debug.Log("Setting heightmap...");
-		tData.SetHeights(0, 0, heightmap);
-		Debug.Log("... heightmap set.");
-	}
+ //       for (int y = 0; y < hmWidth; y++)
+ //       {
+ //           for (int x = 0; x < hmWidth; x++)
+ //           {
+ //               heights[x, y] = Random.value;
+ //           }
+ //       }
+
+ //       SetHeights(heights);
+ //   }
+
+ //   public void SetHeights(Texture2D tex)
+	//{
+ //       //Color[] colormap = tex.GetPixels(0,0,tex.width, tex.width);
+ //       float[,] heightmap = new float[tex.width,tex.height];
+	//	for(int x = 0; x < tex.width; x++)
+	//	{
+	//		for(int y = 0; y < tex.height; y++)
+	//		{
+ //               heightmap[x, y] = DecodeFloatRGBA( tex.GetPixel(x,y) );
+	//		}
+	//	}
+	//	TerrainData tData = GetComponent<Terrain>().terrainData;
+ //       GetComponent<TerrainCollider>().terrainData = tData;
+ //       Debug.Log("Setting heightmap...");
+	//	tData.SetHeights(0, 0, heightmap);
+	//	Debug.Log("... heightmap set.");
+	//}
 
     float DecodeFloatRGBA(Color color)
     {

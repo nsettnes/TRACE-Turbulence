@@ -14,28 +14,43 @@ public class TerrainManager : MonoBehaviour
 
     void Start()
     {
-        TilePool.InitTerrainData();
         StartCoroutine(dotheting());
     }
 
     IEnumerator dotheting()
     {
-        int count = 1;
-        if (TileCreationDistance > 0)
-            count = (TileCreationDistance * 2 + 1) * (TileCreationDistance * 2 + 1);
-        int quart = (int)Math.Sqrt(count);
+        yield return StartCoroutine(TilePool.InitTerrainData());
+        yield return null;
+        yield return null;
+        yield return null;
+        //int sideCount = TileCreationDistance * 2;
 
-        for (int x = 0; x < quart; x++)
+        int fucker = 0;
+        for(int x = 0; x < TileCreationDistance * 2 + 1; x++)
         {
-            for (int z = 0; z < quart; z++)
+            for (int z = TileCreationDistance * 2 + 1; z > 0; z--)
             {
-                TerrainTile tile = TilePool.TerrainTiles.FirstOrDefault(t => !t.InUse);
+                TerrainTile tile = TilePool.TerrainTiles[fucker];
+                fucker++;
                 tile.Place(new Vector3(x, 0, z));
                 SetTerrainTileHeightmap(tile);
                 Resources.UnloadUnusedAssets();
                 yield return null;
             }
         }
+
+
+        //for (int z = -TileCreationDistance; z <= TileCreationDistance; z++)
+        //{
+        //    //for (int x = -TileCreationDistance; x <= TileCreationDistance; x++)
+        //    //{
+        //        TerrainTile tile = TilePool.TerrainTiles.FirstOrDefault(t => !t.InUse);
+        //        tile.Place(new Vector3(0, 0, z));
+        //        SetTerrainTileHeightmap(tile);
+        //        Resources.UnloadUnusedAssets();
+        //        yield return null;
+        //    //}
+        //}
 
         //TerrainTile tile = TilePool.TerrainTiles.FirstOrDefault(t => !t.InUse);
         //tile.Place(new Vector3(1, 0, 1));
@@ -55,18 +70,17 @@ public class TerrainManager : MonoBehaviour
     {
         //Color[] colormap = tex.GetPixels(0,0,tex.width, tex.width);
         float[,] heightmap = new float[tex.width, tex.height];
-        for (int x = 0; x < tex.width; x++)
+        for (int y = 0; y < tex.height; y++)
         {
-            for (int y = 0; y < tex.height; y++)
+            for (int x = 0; x < tex.width; x++)
             {
-                heightmap[x, y] = DecodeFloatRGBA(tex.GetPixel(x, y));
+                heightmap[y, x] = DecodeFloatRGBA(tex.GetPixel(x, y));
             }
         }
         //TerrainData tData = GetComponent<Terrain>().terrainData;
         //GetComponent<TerrainCollider>().terrainData = tData;
-        Debug.Log("Setting heightmap on tile..");
         tile.TData.SetHeights(0, 0, heightmap);
-        Debug.Log("... heightmap set.");
+        tile.Terrain.gameObject.name = "x:" + tile.Index.x + " z:" + tile.Index.z;
     }
 
     static float DecodeFloatRGBA(Color color)

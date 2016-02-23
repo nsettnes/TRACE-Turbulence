@@ -9,9 +9,10 @@ public class ReadTextureNik : MonoBehaviour
     public Material something; 
     int size = 1025;
 
-    void Start()
+    void Awake()
     {
-
+        tex = new Texture2D(size, size, TextureFormat.RGBAFloat, false, true);
+        tex.wrapMode = TextureWrapMode.Clamp;
     }
 
     void Update()
@@ -37,19 +38,18 @@ public class ReadTextureNik : MonoBehaviour
     {
         Debug.Log("Setting texture offset..");
         //index *= size;
-        something.SetVector("_Offset", new Vector4(index.x, index.y, index.z, 0));
+        something.SetVector("_Offset", new Vector4(index.x, index.z, 0, 0));
+        Debug.Log(new Vector4(index.x, index.z, 0, 0));
     }
 
     public Texture2D GetTexture()
     {
         Debug.Log("Getting texture..");
         RenderTexture.active = renderTex;
-        DestroyImmediate(tex);
-        tex = new Texture2D(size, size, TextureFormat.RGBAFloat, false, true);
-        tex.wrapMode = TextureWrapMode.Clamp;
-        tex.ReadPixels(new Rect(0, 0, size, size), 0, 0);
-        tex.Apply();
-        GetComponent<Renderer>().material.mainTexture = tex;
+        //DestroyImmediate(tex);
+        tex.ReadPixels(new Rect(0, 0, size, size), 0, 0, false);
+        //tex.Apply();
+        //GetComponent<Renderer>().material.mainTexture = tex;
 
         return tex;
     }

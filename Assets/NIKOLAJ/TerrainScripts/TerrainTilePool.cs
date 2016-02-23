@@ -9,7 +9,7 @@ public class TerrainTilePool : MonoBehaviour
     public List<TerrainTile> TerrainTiles;
     public List<Terrain> Terrains;
 
-    public void InitTerrainData()
+    public IEnumerator InitTerrainData()
     {
         TerrainData[] tdatas = Resources.LoadAll<TerrainData>(_terrainDataPath);
         TerrainTiles = new List<TerrainTile>();
@@ -17,5 +17,6 @@ public class TerrainTilePool : MonoBehaviour
         {
             TerrainTiles.Add(new TerrainTile(Terrains[i], (TerrainData)tdatas[i], Vector3.zero));
         }
+        yield return null;
     }
 }
