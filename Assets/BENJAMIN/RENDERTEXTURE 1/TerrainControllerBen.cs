@@ -22,20 +22,45 @@ public class TerrainControllerBen : MonoBehaviour
 
     public void SetHeights(Texture2D tex)
 	{
+        float f = 0;
         //Color[] colormap = tex.GetPixels(0,0,tex.width, tex.width);
         float[,] heightmap = new float[tex.width,tex.height];
+        Terrain t = GetComponent<Terrain>();
+        TerrainData tData = t.terrainData;
+        
+        tData.alphamapResolution = 1025;
+        float[,,] maps = t.terrainData.GetAlphamaps(0, 0, t.terrainData.alphamapWidth, t.terrainData.alphamapHeight);
+        Debug.Log(tData.alphamapWidth + " " + tData.alphamapHeight);
 		for(int x = 0; x < tex.width; x++)
 		{
-			for(int y = 0; y < tex.height; y++)
-			{
-                heightmap[x, y] = DecodeFloatRGBA( tex.GetPixel(x,y));
-			}
+            for (int y = 0; y < tex.height; y++)
+            {
+                f = DecodeFloatRGBA(tex.GetPixel(x, y));
+                heightmap[x, y] = f;
+
+                
+
+            }
 		}
-		TerrainData tData = GetComponent<Terrain>().terrainData;
+        
+
+        
+        
         GetComponent<TerrainCollider>().terrainData = tData;
 		Debug.Log("Setting heightmap...");
 		tData.SetHeights(0, 0, heightmap);
 		Debug.Log("... heightmap set.");
+
+        for(int x = 0; x < tex.width; x++)
+		{
+            for (int y = 0; y < tex.height; y++)
+            {
+                float steepness = tData.GetSteepness((float)x/tex.width, (float)y/tex.height);
+                maps[y, x, 0] = steepness / 90;
+                maps[y, x, 1] = ((90-steepness)/90);
+            }
+        }
+        tData.SetAlphamaps(0, 0, maps);
 	}
 
     float DecodeFloatRGBA(Color color)
