@@ -7,80 +7,95 @@ using System;
 public class TerrainManager : MonoBehaviour
 {
     public int TileCreationDistance = 1;
-    public List<Terrain> TerrainList = new List<Terrain>();
-    public List<TerrainTile> TileList = new List<TerrainTile>();
-    public ReadTextureNik ReadTexture;
-    public TerrainTilePool TilePool; 
+    //public List<Terrain> TerrainList = new List<Terrain>();
+    //public List<TerrainTile> TileList = new List<TerrainTile>();
+    public ReadTextureNik ReadTexture, ReadTexture1;
+
+    public TerrainTilePool TilePool;
+    bool coroutineRunning;
+
+    void Awake()
+    {
+        TerrainCenter.CenterChanged += TerrainCenter_CenterChanged;
+    }
 
     void Start()
     {
-        StartCoroutine(dotheting());
+        StartCoroutine(TilePool.InitTerrainData());
     }
 
-    IEnumerator dotheting()
+    void TerrainCenter_CenterChanged(int x, int z)
     {
-        yield return StartCoroutine(TilePool.InitTerrainData());
-        yield return null;
-        yield return null;
-        yield return null;
-        //int sideCount = TileCreationDistance * 2;
+        StartCoroutine(GenerateTilesAround(x, z));
+    }
 
-        int fucker = 0;
-        for(int x = 0; x < TileCreationDistance * 2 + 1; x++)
+    IEnumerator GenerateTilesAround(int centerX, int centerZ)
+    {
+        while (coroutineRunning)
+            yield return null;
+        
+        coroutineRunning = true;
+
+        yield return null;
+        yield return null;
+        yield return null;
+        yield return null;
+        yield return null;
+
+        float t = Time.time;
+        for (int z = centerZ - TileCreationDistance; z <= centerZ + TileCreationDistance; z++)
         {
-            for (int z = TileCreationDistance * 2 + 1; z > 0; z--)
+            for (int x = centerX - TileCreationDistance; x <= centerX + TileCreationDistance; x++) 
             {
-                TerrainTile tile = TilePool.TerrainTiles[fucker];
-                fucker++;
-                tile.Place(new Vector3(x, 0, z));
-                SetTerrainTileHeightmap(tile);
-                Resources.UnloadUnusedAssets();
-                yield return null;
+                Debug.Log("X: " + x + " Z: " + z);
+                if (!TilePool.IsIndexInUse(x, z))
+                {
+                    Debug.Log("Something something");
+                    TerrainTile tile = TilePool.GetUnused();
+                    if (tile == null)
+                        tile = TilePool.GetFurthestTile(centerX, centerZ);
+                    tile.Place(x, z);
+                    ReadTexture.SetTextureOffset(tile.IndexX, tile.IndexZ);
+                    ReadTexture1.SetTextureOffset(tile.IndexX, tile.IndexZ);
+                    yield return null;
+                    SetTerrainTileHeightmap(tile);
+                }
             }
         }
 
-
-        //for (int z = -TileCreationDistance; z <= TileCreationDistance; z++)
-        //{
-        //    //for (int x = -TileCreationDistance; x <= TileCreationDistance; x++)
-        //    //{
-        //        TerrainTile tile = TilePool.TerrainTiles.FirstOrDefault(t => !t.InUse);
-        //        tile.Place(new Vector3(0, 0, z));
-        //        SetTerrainTileHeightmap(tile);
-        //        Resources.UnloadUnusedAssets();
-        //        yield return null;
-        //    //}
-        //}
-
-        //TerrainTile tile = TilePool.TerrainTiles.FirstOrDefault(t => !t.InUse);
-        //tile.Place(new Vector3(1, 0, 1));
-        //SetTerrainTileHeightmap(tile);
-        Resources.UnloadUnusedAssets();
+        Debug.Log(Time.time - t);
+        Resources.UnloadUnusedAssets(); 
+        coroutineRunning = false;
         yield return null;
     }
 
     void SetTerrainTileHeightmap(TerrainTile tile)
     {
-        ReadTexture.SetTextureOffset(tile.Index);
         Texture2D tex = ReadTexture.GetTexture();
-        SetHeights(tile, tex);
+        Texture2D tex1 = ReadTexture1.GetTexture();
+        SetHeights(tile, tex, tex1);
     }
 
-    public static void SetHeights(TerrainTile tile, Texture2D tex)
+    public static void SetHeights(TerrainTile tile, Texture2D tex, Texture2D tex1)
     {
         //Color[] colormap = tex.GetPixels(0,0,tex.width, tex.width);
         float[,] heightmap = new float[tex.width, tex.height];
+        //int chunkSize = 256;
         for (int y = 0; y < tex.height; y++)
         {
             for (int x = 0; x < tex.width; x++)
             {
-                heightmap[y, x] = DecodeFloatRGBA(tex.GetPixel(x, y));
+                heightmap[x, y] = (DecodeFloatRGBA(tex.GetPixel(y, x))*0.9f + DecodeFloatRGBA(tex1.GetPixel(y, x))*0.4f);
+                //make coroutine and yield return each xxxx pixel analyzed
             }
         }
         //TerrainData tData = GetComponent<Terrain>().terrainData;
         //GetComponent<TerrainCollider>().terrainData = tData;
+
+        //xBase and yBase parameters are x and y coordinate starting points/offset. Keep at 0, 0 to change the entire terrain
         tile.TData.SetHeights(0, 0, heightmap);
-        tile.Terrain.gameObject.name = "x:" + tile.Index.x + " z:" + tile.Index.z;
+
+        tile.Terrain.gameObject.name = "x:" + tile.IndexX + " z:" + tile.IndexZ;
     }
 
     static float DecodeFloatRGBA(Color color)

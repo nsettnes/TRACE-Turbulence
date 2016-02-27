@@ -34,12 +34,12 @@ public class ReadTextureNik : MonoBehaviour
         //}
     }
 
-    public void SetTextureOffset(Vector3 index)
+    public void SetTextureOffset(int x, int z)
     {
         Debug.Log("Setting texture offset..");
         //index *= size;
-        something.SetVector("_Offset", new Vector4(index.x, index.z, 0, 0));
-        Debug.Log(new Vector4(index.x, index.z, 0, 0));
+        something.SetVector("_Offset", new Vector4(x, z, 0, 0));
+        Debug.Log(new Vector4(x, z, 0, 0));
     }
 
     public Texture2D GetTexture()

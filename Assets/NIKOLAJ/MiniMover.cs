@@ -16,15 +16,15 @@ public class MiniMover : MonoBehaviour
         {
             GetComponent<Rigidbody>().AddForce((Vector3.forward) * PushSpeed * Time.deltaTime, ForceMode.Impulse);
         }
-        else if(Input.GetKey(KeyCode.S))
+        if(Input.GetKey(KeyCode.S))
         {
             GetComponent<Rigidbody>().AddForce((Vector3.back) * PushSpeed * Time.deltaTime, ForceMode.Impulse);
         }
-        else if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
             GetComponent<Rigidbody>().AddForce((Vector3.left) * PushSpeed * Time.deltaTime, ForceMode.Impulse);
         }
-        else if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D))
         {
             GetComponent<Rigidbody>().AddForce((Vector3.right) * PushSpeed * Time.deltaTime, ForceMode.Impulse);
         }

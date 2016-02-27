@@ -8,26 +8,35 @@ public class TerrainTile
     public Terrain Terrain { get; private set; }
     public TerrainData TData { get; private set; }
     public TerrainCollider TCollider { get; private set; }
-    public Vector3 Index { get; private set; }
+    public int IndexX { get; private set; }
+    public int IndexZ { get; private set; }
+
     public bool InUse { get; private set; }
 
-    public TerrainTile(Terrain terrain, TerrainData tData, Vector3 index)
+    public TerrainTile(Terrain terrain, TerrainData tData, int x, int z)
     {
         Terrain = terrain;
         TData = tData;
         TCollider = terrain.GetComponent<TerrainCollider>();
-        Index = index;
+        IndexX = x;
+        IndexZ = z;
         InUse = false;
 
         Terrain.terrainData = TData;
         TCollider.terrainData = TData;
     }
 
-    public void Place(Vector3 index)
+    public void Place(int x, int z)
     {
-        Index = index;
+        IndexX = x;
+        IndexZ = z;
         InUse = true;
+        Terrain.gameObject.SetActive(true);
+        Terrain.transform.position = new Vector3(IndexX * _widthAndLength, 0, IndexZ * _widthAndLength); ;
+    }
 
-        Terrain.transform.position = index * _widthAndLength;
+    public int GetDistance(int x, int z)
+    {
+        return Mathf.Abs(IndexX - x) + Mathf.Abs(IndexZ - z);
     }
 }
